@@ -1,6 +1,8 @@
 package com.alihocaoglu.hrms.busines.concretes;
 
 import com.alihocaoglu.hrms.busines.abstracts.JobPositionService;
+import com.alihocaoglu.hrms.core.utilities.results.DataResult;
+import com.alihocaoglu.hrms.core.utilities.results.SuccessDataResult;
 import com.alihocaoglu.hrms.dataAccess.abstracts.JobPositionDao;
 import com.alihocaoglu.hrms.entities.concretes.JobPosition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ public class JobPositionManager implements JobPositionService {
     }
 
     @Override
-    public List<JobPosition> getAll() {
-        return jobPositionDao.findAll();
+    public DataResult<List<JobPosition>> getAll() {
+        return new SuccessDataResult<List<JobPosition>>(this.jobPositionDao.findAll(),"Data listelendi");
     }
 }
