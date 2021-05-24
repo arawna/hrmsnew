@@ -1,8 +1,6 @@
 package com.alihocaoglu.hrms.busines.concretes;
 
-import com.alihocaoglu.hrms.busines.abstracts.CandidateService;
-import com.alihocaoglu.hrms.busines.abstracts.NationalValidationService;
-import com.alihocaoglu.hrms.busines.abstracts.UserService;
+import com.alihocaoglu.hrms.busines.abstracts.*;
 import com.alihocaoglu.hrms.core.utilities.results.*;
 import com.alihocaoglu.hrms.dataAccess.abstracts.CandidateDao;
 import com.alihocaoglu.hrms.entities.concretes.Candidate;
@@ -18,12 +16,16 @@ public class CandidateManager implements CandidateService {
     private CandidateDao candidateDao;
     private NationalValidationService nationalValidationService;
     private UserService userService;
+    private ActivationCodeService activationCodeService;
+    private EmailService emailService;
 
     @Autowired
-    public CandidateManager(CandidateDao candidateDao, NationalValidationService nationalValidationService,UserService userService) {
+    public CandidateManager(CandidateDao candidateDao, NationalValidationService nationalValidationService,UserService userService,ActivationCodeService activationCodeService,EmailService emailService) {
         this.candidateDao = candidateDao;
         this.nationalValidationService=nationalValidationService;
         this.userService=userService;
+        this.activationCodeService=activationCodeService;
+        this.emailService=emailService;
     }
 
     @Override
@@ -52,8 +54,10 @@ public class CandidateManager implements CandidateService {
         }else if(userService.getByEmail(candidate.getEmail()).getData() != null){
             return new ErrorResult("Bu email zaten kayıtlı");
         }else if(nationalValidationService.validate(candidate)){
+            candidate.setMailVerify(false);
             this.candidateDao.save(candidate);
-            return new SuccessResult("Kayıt yapıldı");
+            this.emailService.sendVerifyEmail(candidate,this.activationCodeService.createActivationCode(candidate));
+            return new SuccessResult(candidate.getEmail()+" Adresine doğrulama kodu gönderildi");
         }else{
             return new ErrorResult("Kullanıcı bilgileri hatalı");
         }
