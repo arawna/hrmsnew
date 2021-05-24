@@ -1,8 +1,10 @@
 package com.alihocaoglu.hrms.busines.concretes;
 
 import com.alihocaoglu.hrms.busines.abstracts.EmployerService;
+import com.alihocaoglu.hrms.busines.abstracts.UserService;
 import com.alihocaoglu.hrms.core.utilities.results.*;
 import com.alihocaoglu.hrms.dataAccess.abstracts.EmployerDao;
+import com.alihocaoglu.hrms.dataAccess.abstracts.UserDao;
 import com.alihocaoglu.hrms.entities.concretes.Employer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,12 @@ import java.util.List;
 public class EmployerManager implements EmployerService {
 
     private EmployerDao employerDao;
+    private UserService userService;
 
     @Autowired
-    public EmployerManager(EmployerDao employerDao) {
+    public EmployerManager(EmployerDao employerDao,UserService userService) {
         this.employerDao = employerDao;
+        this.userService=userService;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class EmployerManager implements EmployerService {
 
     @Override
     public Result add(Employer employer) {
-        if(getByEmail(employer.getEmail()).getData() != null){
+        if(userService.getByEmail(employer.getEmail()).getData() != null){
             return new ErrorResult("Bu email zaten kayıtlı");
         }
         this.employerDao.save(employer);

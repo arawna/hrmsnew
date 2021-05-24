@@ -24,4 +24,9 @@ public class UserManager implements UserService {
     public DataResult<List<User>> getAll() {
         return new SuccessDataResult<List<User>>(this.userDao.findAll(),"Data listelendi");
     }
+
+    @Override
+    public DataResult<User> getByEmail(String email) {
+        return new SuccessDataResult<User>(this.userDao.findByEmail(email),"Listelendi");
+    }
 }

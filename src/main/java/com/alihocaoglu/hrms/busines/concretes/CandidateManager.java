@@ -2,6 +2,7 @@ package com.alihocaoglu.hrms.busines.concretes;
 
 import com.alihocaoglu.hrms.busines.abstracts.CandidateService;
 import com.alihocaoglu.hrms.busines.abstracts.NationalValidationService;
+import com.alihocaoglu.hrms.busines.abstracts.UserService;
 import com.alihocaoglu.hrms.core.utilities.results.*;
 import com.alihocaoglu.hrms.dataAccess.abstracts.CandidateDao;
 import com.alihocaoglu.hrms.entities.concretes.Candidate;
@@ -15,11 +16,13 @@ public class CandidateManager implements CandidateService {
 
     private CandidateDao candidateDao;
     private NationalValidationService nationalValidationService;
+    private UserService userService;
 
     @Autowired
-    public CandidateManager(CandidateDao candidateDao, NationalValidationService nationalValidationService) {
+    public CandidateManager(CandidateDao candidateDao, NationalValidationService nationalValidationService,UserService userService) {
         this.candidateDao = candidateDao;
         this.nationalValidationService=nationalValidationService;
+        this.userService=userService;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class CandidateManager implements CandidateService {
     public Result add(Candidate candidate) {
         if(getByNationalNumber(candidate.getNationalNumber()).getData() != null){
             return new ErrorResult("Bu kimlik numarası zaten kayıtlı");
-        }else if(getByEmail(candidate.getEmail()).getData() != null){
+        }else if(userService.getByEmail(candidate.getEmail()).getData() != null){
             return new ErrorResult("Bu email zaten kayıtlı");
         }
 
