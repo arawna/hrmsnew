@@ -4,7 +4,6 @@ import com.alihocaoglu.hrms.busines.abstracts.EmployerService;
 import com.alihocaoglu.hrms.busines.abstracts.UserService;
 import com.alihocaoglu.hrms.core.utilities.results.*;
 import com.alihocaoglu.hrms.dataAccess.abstracts.EmployerDao;
-import com.alihocaoglu.hrms.dataAccess.abstracts.UserDao;
 import com.alihocaoglu.hrms.entities.concretes.Employer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,10 +34,12 @@ public class EmployerManager implements EmployerService {
 
     @Override
     public Result add(Employer employer) {
-        if(userService.getByEmail(employer.getEmail()).getData() != null){
+       if(userService.getByEmail(employer.getEmail()).getData() != null){
             return new ErrorResult("Bu email zaten kayıtlı");
         }
         this.employerDao.save(employer);
         return new SuccessResult("Kullanıcı eklendi");
     }
+
+
 }
